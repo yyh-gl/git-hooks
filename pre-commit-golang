@@ -8,7 +8,7 @@ echo "< < < <   | |   | | '_ \\| __|   > > > >"
 echo " \\ \\ \\ \\  | |___| | | | | |_   / / / /"
 echo "  \\_\\_\\_\\ \\_____/_|_| |_|\\__| /_/_/_/"
 echo
-docker-compose exec -T app golangci-lint run --tests --disable-all --enable=goimports --enable=golint --enable=govet --enable=errcheck ./...
+docker-compose exec -T <Docker Container Name> golangci-lint run --tests --disable-all --enable=goimports --enable=golint --enable=govet --enable=errcheck ./...
 lint_result=$?
  
 # Lintチェックに失敗した場合はテストを実行しない
@@ -25,7 +25,7 @@ echo " / / / /    | | ___  ___| |_   \\ \\ \\ \\"
 echo "< < < <     | |/ _ \\/ __| __|   > > > >"
 echo " \\ \\ \\ \\    | |  __/\\__ \\ |_   / / / /"
 echo "  \\_\\_\\_\\   \\_/\\___||___/\\__| /_/_/_/"
-docker-compose exec -T -e APP_ENV=test app go test -race ./...
+docker-compose exec -T -e APP_ENV=test <Docker Container Name> go test -race ./...
 test_result=$?
 
 
@@ -55,4 +55,4 @@ exit 0
 # 差分のあるファイル（*.go）を抽出
 # changed_files=$(git diff --cached --name-only --diff-filter=ACM | grep '.go$')
 # [ -z "$changed_files" ] && exit 0
-# docker-compose exec -T app golangci-lint run --tests --disable-all --enable=goimports --enable=golint --enable=govet --enable=errcheck ${changed_files[@]}
+# docker-compose exec -T <Docker Container Name> golangci-lint run --tests --disable-all --enable=goimports --enable=golint --enable=govet --enable=errcheck ${changed_files[@]}
