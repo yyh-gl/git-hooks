@@ -30,7 +30,7 @@ docker-compose exec -T -e APP_ENV=test <Docker Container Name> go test -race ./.
 test_result=$?
 
 
-# Lintチェックに失敗した場合はテストを実行しない
+# テストに失敗した場合は異常終了
 if [ $test_result -ne 0 ]; then
     exit 1
 fi
