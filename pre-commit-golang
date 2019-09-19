@@ -1,22 +1,49 @@
 #!/bin/sh
-
+ 
 # GolangCI-int による Lint
-golangci-lint run --tests --disable-all --enable=goimports --enable=golint --enable=govet --enable=errcheck ./...
+echo "   ______  _     _       _    ______"
+echo "  / / / / | |   (_)     | |   \\ \\ \\ \\"
+echo " / / / /  | |    _ _ __ | |_   \\ \\ \\ \\"
+echo "< < < <   | |   | | '_ \\| __|   > > > >"
+echo " \\ \\ \\ \\  | |___| | | | | |_   / / / /"
+echo "  \\_\\_\\_\\ \\_____/_|_| |_|\\__| /_/_/_/"
+echo
+docker-compose exec -T app golangci-lint run --tests --disable-all --enable=goimports --enable=golint --enable=govet --enable=errcheck ./...
 lint_result=$?
-exit $lint_result
+ 
+# Lintチェックに失敗した場合はテストを実行しない
+if [ $lint_result -ne 0 ]; then
+    exit 1
+fi
+
+echo "All OK"
+ 
+# go test によるテスト
+echo "   ______  _____         _    ______"
+echo "  / / / / |_   _|       | |   \\ \\ \\ \\"
+echo " / / / /    | | ___  ___| |_   \\ \\ \\ \\"
+echo "< < < <     | |/ _ \\/ __| __|   > > > >"
+echo " \\ \\ \\ \\    | |  __/\\__ \\ |_   / / / /"
+echo "  \\_\\_\\_\\   \\_/\\___||___/\\__| /_/_/_/"
+docker-compose exec -T -e APP_ENV=test app go test -race ./...
+test_result=$?
+
 
 # Lintチェックに失敗した場合はテストを実行しない
-# if [ $lint_result -ne 0 ]; then
-#     exit 1
-# fi
+if [ $test_result -ne 0 ]; then
+    exit 1
+fi
 
-# go test によるテスト
-# docker-compose exec -T -e APP_ENV=test api go test -race ./...
-# test_result=$?
-
-# exit $test_result
-
-
+echo "   ______ ______                  ______"
+echo "  / / / / |  _  \\                 \\ \\ \\ \\"
+echo " / / / /  | | | |___  _ __   ___   \\ \\ \\ \\"
+echo "< < < <   | | | / _ \\| '_ \\ / _ \\   > > > >"
+echo " \\ \\ \\ \\  | |/ / (_) | | | |  __/  / / / /"
+echo "  \\_\\_\\_\\ |___/ \\___/|_| |_|\\___| /_/_/_/"
+ 
+exit 0
+ 
+ 
 #########################################################################################
 # TODO:
 # 差分のあるファイルに対してのみ Lint チェックしたいのですが、
@@ -24,8 +51,8 @@ exit $lint_result
 # -> 参考：https://github.com/golangci/golangci-lint/issues/391
 # PRも出されているようなのでバグが直り次第、差分だけを Lint チェックするようにします。
 #########################################################################################
-
+ 
 # 差分のあるファイル（*.go）を抽出
 # changed_files=$(git diff --cached --name-only --diff-filter=ACM | grep '.go$')
 # [ -z "$changed_files" ] && exit 0
-# golangci-lint run --tests --disable-all --enable=goimports --enable=golint --enable=govet --enable=errcheck ${changed_files[@]}
+# docker-compose exec -T app golangci-lint run --tests --disable-all --enable=goimports --enable=golint --enable=govet --enable=errcheck ${changed_files[@]}
